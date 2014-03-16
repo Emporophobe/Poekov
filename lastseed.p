@@ -1,6 +1,5 @@
-(S'not'
+(S'I'
+S'quivered'
 p1
-S'seen'
-p2
-tp3
+tp2
 .
