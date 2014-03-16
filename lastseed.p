@@ -1,5 +1,6 @@
-(S'I'
-S'quivered'
+(S'of'
 p1
-tp2
+S'the'
+p2
+tp3
 .

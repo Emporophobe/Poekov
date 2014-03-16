@@ -14,10 +14,8 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
-#Generate a block of text
 
 corpus = 'poe'
-
 database = pickle.load(open(corpus+'.p'))
 
 try:
@@ -25,40 +23,35 @@ try:
 except IOError:
     seed = database.keys()[random.randint(0, len(database.keys())-1)]
 
-stringlength = 100
-gentext = []
 
-while len(gentext) < stringlength:
-    gentext.append(seed[0])
-    new = database[seed][random.randint(0, len(database[seed])-1)]
+def generate(words, seed):
+    gentext = []
+
+    while len(gentext) < int(words):
+        gentext.append(seed[0])
+        new = database[seed][random.randint(0, len(database[seed])-1)]
     
-    seed = (seed[1], new)
+        seed = (seed[1], new)
+        pickle.dump(seed, open('lastseed.p', 'w'))
+    #return gentext
 
-#print " ".join(gentext)
-#print '\n'
+#def sentences(gentext):
+    while True:
+        if gentext[0].isupper():
+            break
+        else:
+            gentext.pop(0)
 
-pickle.dump(seed, open('lastseed.p', 'w'))
+    endpunct = ['.', '?', '!']
+    sentence = []
 
-#Split text into sentences
+    for word in gentext:
+        if word[-1] not in endpunct:
+            sentence.append(word)
+        else:
+            sentence.append(word)
+            print " ".join(sentence)
+            break
 
-while True:
-    if gentext[0].isupper():
-        break
-    else:
-        gentext.pop(0)
-#print " ".join(gentext)
-
-endpunct = ['.', '?', '!']
-
-i = 0
-sentence = []
-
-for word in gentext:
-    if word[-1] not in endpunct:
-        sentence.append(word)
-        #gentext.pop(0)
-    else:
-        sentence.append(word)
-        print " ".join(sentence)
-        print '\n'
-        break
+#sentences(generate(100, seed))
+generate(100, seed)
