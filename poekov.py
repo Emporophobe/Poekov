@@ -37,7 +37,7 @@ def generate(words):
         seed = (seed[1], new)
 
     while True:
-        if gentext[1].isupper() and gentext[0][-1] in endpunct:
+        if gentext[1][0].isupper() and gentext[0][-1] in endpunct:
             gentext.pop(0)
             break
         else:
@@ -53,7 +53,8 @@ def generate(words):
             break
         
     text = ' '.join(sentence)
-    
+    text = text.replace('\x97', '--') #replace em dashes with double hyphens
+
     return text
 
 #Post generated sentences as tweets every hour
