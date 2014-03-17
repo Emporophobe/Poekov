@@ -1,6 +1,6 @@
-(S'of'
+(S'peculiar'
 p1
-S'the'
+S'smell'
 p2
 tp3
 .

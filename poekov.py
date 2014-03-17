@@ -1,6 +1,7 @@
 import random
 import cPickle as pickle
 import tweepy
+import time
 
 #Tweepy setup
 
@@ -14,6 +15,7 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
+#Prepare the database
 
 corpus = 'poe'
 database = pickle.load(open(corpus+'.p'))
@@ -23,26 +25,26 @@ try:
 except IOError:
     seed = database.keys()[random.randint(0, len(database.keys())-1)]
 
-
+#Generate a single sentence
+    
 def generate(words, seed):
     gentext = []
-
+    endpunct = ['.', '?', '!']
+    
     while len(gentext) < int(words):
         gentext.append(seed[0])
         new = database[seed][random.randint(0, len(database[seed])-1)]
     
         seed = (seed[1], new)
         pickle.dump(seed, open('lastseed.p', 'w'))
-    #return gentext
 
-#def sentences(gentext):
     while True:
-        if gentext[0].isupper():
+        if gentext[1].isupper() and gentext[0][-1] in endpunct:
+            gentext.pop(0)
             break
         else:
             gentext.pop(0)
 
-    endpunct = ['.', '?', '!']
     sentence = []
 
     for word in gentext:
@@ -50,8 +52,18 @@ def generate(words, seed):
             sentence.append(word)
         else:
             sentence.append(word)
-            print " ".join(sentence)
             break
+    return ' '.join(sentence)
 
-#sentences(generate(100, seed))
-generate(100, seed)
+#Post generated sentences as tweets every hour
+
+while True:
+    try:
+        tweet = generate(100, seed)
+    except IndexError:
+        continue
+    
+    if  len(tweet) <= 140 and len(tweet) > 0:
+        api.update_status(tweet)
+        time.sleep(300)
+        
