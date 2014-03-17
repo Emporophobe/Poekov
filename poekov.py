@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import random
 import cPickle as pickle
 import tweepy
@@ -32,7 +35,6 @@ def generate(words):
         new = database[seed][random.randint(0, len(database[seed])-1)]
     
         seed = (seed[1], new)
-        pickle.dump(seed, open('lastseed.p', 'w'))
 
     while True:
         if gentext[1].isupper() and gentext[0][-1] in endpunct:
@@ -50,9 +52,7 @@ def generate(words):
             sentence.append(word)
             break
         
-    text = ' ' .join(sentence)
-    
-    text.replace('—', '--')
+    text = ' '.join(sentence)
     
     return text
 
@@ -61,10 +61,11 @@ def generate(words):
 while True:
     try:
         tweet = generate(100)
-    except IndexError:
+    except (IndexError, KeyError):
         continue
     
-    if  len(tweet) <= 140 and len(tweet) > 0:
+    if  len(tweet) <= 140 and len(tweet) > 0 and tweet[-1] in ['.', '?', '!']:
         api.update_status(tweet)
         print tweet
+        print ''
         time.sleep(3600)
