@@ -21,7 +21,7 @@ api = tweepy.API(auth)
 
 #Prepare the database
 
-corpus = 'shakespeare'
+corpus = 'poe'
 database = pickle.load(open(corpus+'.p'))
 
 #Generate a single sentence
@@ -92,6 +92,7 @@ try:
 except:
     lastmention = 0
     print 'No previous mention'
+    pickle.dump(lastmention, open('lastmention.p', 'w'))
 
 while True:
     '''
@@ -106,6 +107,9 @@ while True:
     
     for mention in mentions:
         mentionids.append(mention.id)
+
+    if len(mentionids) == 0:
+        mentionids = [0]
 
     for mention in mentions:
         if mention.id > lastmention:
